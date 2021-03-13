@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "chattylit-f08ee": {
+      "hosting": {
+        "chattylit": [
+          "chattylit-f08ee"
+        ]
+      }
+    }
+  }
+}
