@@ -16,10 +16,15 @@ export class FirebaseService {
       .valueChanges()
       .pipe(
         map((res) =>
-          res.map((msg: any) => ({
-            ...msg,
-            date: new Date(msg.date.seconds * 1000),
-          })),
+          res
+            .map(
+              (msg: any) =>
+                ({
+                  ...msg,
+                  date: new Date(msg.date.seconds * 1000),
+                } as Message),
+            )
+            .sort((a, b) => a.date.valueOf() - b.date.valueOf()),
         ),
         tap((res) => console.log(res)),
       );
