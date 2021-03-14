@@ -1,42 +1,43 @@
-<main class="bg-gray-800 h-screen">
-  <div class="text-gray-100 h-full">
-    <div class="flex flex-col justify-center items-center m-auto h-full">
-      <div class="w-full h-full py-10">
-        <div class="w-full flex flex-col justify-center overflow-y-scroll">
-          <div class="h-full m-auto bg-gray-700 py-10 px-12 rounded-lg">
-            <div class="p-2" *ngFor="let message of firebaseSvc.messages$ | async">
-              <div>
-                <small class="text-green-500 rounded-full">{{ message.username }}</small> |
-                <small class="text-gray-400">{{ message.date | date: 'shortTime' }}</small>
-              </div>
-              <div class="mt-2 p-2 w-auto max-w-2xl break-words bg-gray-800 rounded-lg">
-                <p class="text-sm">{{ message.text }}</p>
-              </div>
-            </div>
-
-            <div class="flex justify-end p-2">
-              <div>
-                <div class="flex justify-end">
-                  <small>me</small>
-                </div>
-                <div>hi world!!</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="w-3/4 m-auto text-gray-800 mt-5">
-          <form class="flex items-center gap-5" [formGroup]="chatFormGroup" (ngSubmit)="sendMessage()">
-            <div class="w-full">
-              <input
-                class="w-full px-2 py-1 border-2 rounded-full focus:outline-none focus:ring focus:border-blue-300"
-                type="text"
-                placeholder="Type something.."
-                formControlName="message"
-              />
-            </div>
-          </form>
+<main class="h-screen bg-gray-800 text-gray-100">
+  <div class="h-screen py-10 flex flex-col justify-center items-center">
+    <div class="w-1/2 mx-auto relative bg-gray-700 rounded-t-lg">
+      <div class="w-1/2 h-20 flex justify-start items-center bg-gray-900 rounded-t-lg text-center fixed">
+        <div class="ml-5">
+          <h4>Chattylit 🔥</h4>
         </div>
       </div>
+      <div id="chat-history" class="mt-20 py-5 px-10 overflow-y-scroll" style="max-height: 60vh">
+        <div class="p-2" *ngFor="let message of firebaseSvc.messages$ | async">
+          <div>
+            <small class="text-green-500 rounded-full">{{ message.username }}</small> |
+            <small class="text-gray-400">{{ message.date | date: 'shortTime' }}</small>
+          </div>
+          <div class="mt-2 p-2 max-w-2xl break-words bg-gray-800 rounded-lg" style="width: fit-content">
+            <p class="text-sm">{{ message.text }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end p-2">
+        <div>
+          <div class="flex justify-end">
+            <small>me</small>
+          </div>
+          <div>hi world!!</div>
+        </div>
+      </div>
+    </div>
+    <div class="w-1/2 mx-auto mt-px text-gray-400">
+      <form class="flex items-center gap-5" [formGroup]="chatFormGroup" (ngSubmit)="sendMessage()">
+        <div class="w-full">
+          <input
+            class="w-full h-12 px-6 py-1 rounded-b-lg bg-gray-900 focus:outline-none focus:ring-1 focus:border-gray-400"
+            type="text"
+            placeholder="Type something.."
+            formControlName="message"
+          />
+        </div>
+      </form>
     </div>
   </div>
 </main>
