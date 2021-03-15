@@ -1,8 +1,16 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { DocumentData, QuerySnapshot } from '@angular/fire/firestore';
+import { animate, style, transition, trigger } from '@angular/animations';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { takeUntil, tap } from 'rxjs/operators';
 import { FirebaseService } from './core/services/firebase.service';
 import { Message } from './models/message.model';
 
@@ -10,34 +18,86 @@ import { Message } from './models/message.model';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  animations: [
+    trigger('fadeSlideIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(10px)' }),
+        animate('300ms', style({ opacity: 1, transform: 'translateX(0)' })),
+      ]),
+    ]),
+    trigger('fadeIn', [transition(':enter', [style({ opacity: 0 }), animate('250ms'), style({ opacity: 1 })])]),
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('chatHistory') private chatHistory: ElementRef;
 
+  public messages: Message[];
+  public recentMessages: Message[];
+
   public chatFormGroup: FormGroup = this.fb.group({
-    message: new FormControl('', [Validators.required]),
+    message: new FormControl(null, [Validators.required]),
   });
 
-  recentMessages$: Observable<Message[]>;
+  private readonly onDestroy$: Subject<void> = new Subject();
 
-  constructor(public readonly firebaseSvc: FirebaseService, private readonly fb: FormBuilder) {}
+  constructor(
+    public readonly firebaseSvc: FirebaseService,
+    private readonly fb: FormBuilder,
+    private readonly cd: ChangeDetectorRef,
+  ) {
+    this.messages = [];
+    this.recentMessages = [];
+  }
 
   public ngOnInit(): void {
-    this.setUpRecentMessagesObs();
+    this.fetchRecentMessages();
+    this.setUpMessagesObs();
+  }
+
+  public ngOnDestroy(): void {
+    this.onDestroy$.next();
+    this.onDestroy$.complete();
   }
 
   public sendMessage() {
-    console.warn(this.chatFormGroup.value);
+    const msg = this.chatFormGroup.get('message').value.trim();
+
+    if (this.chatFormGroup.invalid) {
+      return;
+    }
+
+    console.warn({ msg });
 
     this.firebaseSvc
-      .saveMessage(this.chatFormGroup.get('message').value, 'bkw')
-      .pipe(finalize(() => this.chatHistory.nativeElement.scrollTo(0, this.chatHistory.nativeElement.scrollHeight)))
+      .postMessage(msg, 'bkw')
+      .pipe(
+        tap(() => this.cd.detectChanges()),
+        tap(() => this.chatHistory.nativeElement.scrollTo(0, this.chatHistory.nativeElement.scrollHeight)),
+      )
       .subscribe();
 
     this.chatFormGroup.reset();
   }
 
-  public setUpRecentMessagesObs(): void {
-    this.recentMessages$ = this.firebaseSvc.getRecentMessages();
+  private setUpMessagesObs(): void {
+    this.firebaseSvc.messages$
+      .pipe(
+        takeUntil(this.onDestroy$),
+        tap((res) => (this.messages = [...this.messages, ...res])),
+        tap(() => this.cd.detectChanges()),
+        tap(() => this.chatHistory.nativeElement.scrollTo(0, this.chatHistory.nativeElement.scrollHeight)),
+      )
+      .subscribe();
+  }
+
+  private fetchRecentMessages(): void {
+    this.firebaseSvc
+      .getRecentMessages()
+      .pipe(
+        tap((messages) => (this.recentMessages = messages)),
+        tap(() => this.cd.detectChanges()),
+      )
+      .subscribe();
   }
 }

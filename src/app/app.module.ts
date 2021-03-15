@@ -7,11 +7,14 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { environment } from 'src/environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoEmptyWhitespaceDirective } from './directives/no-empty-whitespace.directive';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, NoEmptyWhitespaceDirective],
   imports: [
     BrowserModule,
+    BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
     AppRoutingModule,
