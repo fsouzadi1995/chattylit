@@ -7,21 +7,14 @@
         </div>
       </div>
       <div #chatHistory id="chat-history" class="max-w-1/2 mt-20 py-5 px-10 overflow-y-auto">
-        <div class="p-2" *ngFor="let msg of recentMessages">
-          <div [@fadeIn]>
-            <small class="text-green-500 rounded-full">{{ msg.username }}</small> |
+        <div class="p-2" *ngFor="let msg of recentMessages" [@fadeSlideIn]>
+          <div>
+            <small class="username text-yellow-500 rounded-full">{{ msg.username }}</small> |
             <small class="text-gray-400">{{ msg.date | date: 'shortTime' }}</small>
           </div>
-          <div
-            class="mt-2 p-2 max-w-2xl break-words bg-gray-800 rounded-lg rounded-tl-none relative"
-            style="width: fit-content"
-            [@fadeSlideIn]
-          >
+          <div class="text-container mt-3 p-2 max-w-2xl break-words bg-gray-800 rounded-lg rounded-tl-none relative">
             <div class="arrow-container">
               <div class="arrow-up"></div>
-              <div class="arrow-down"></div>
-              <div class="arrow-left"></div>
-              <div class="arrow-right"></div>
             </div>
 
             <p class="text-sm">{{ msg.text }}</p>
@@ -30,18 +23,12 @@
 
         <div class="p-2" *ngFor="let msg of messages" [@fadeSlideIn]>
           <div>
-            <small class="text-green-500 rounded-full">{{ msg.username }}</small> |
+            <small class="username text-yellow-500 rounded-full">{{ msg.username }}</small> |
             <small class="text-gray-400">{{ msg.date | date: 'shortTime' }}</small>
           </div>
-          <div
-            class="mt-2 p-2 max-w-2xl break-words bg-gray-800 rounded-lg rounded-tl-none relative"
-            style="width: fit-content"
-          >
+          <div class="text-container mt-3 p-2 max-w-2xl break-words bg-gray-800 rounded-lg rounded-tl-none relative">
             <div class="arrow-container">
               <div class="arrow-up"></div>
-              <div class="arrow-down"></div>
-              <div class="arrow-left"></div>
-              <div class="arrow-right"></div>
             </div>
             <p class="text-sm">{{ msg.text }}</p>
           </div>

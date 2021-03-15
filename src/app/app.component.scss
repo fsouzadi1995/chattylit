@@ -2,6 +2,18 @@
   scroll-behavior: smooth;
   max-height: 60vh;
   transition: height 1s ease-in-out;
+
+  .username {
+    font-weight: 700;
+  }
+
+  .text-container {
+    width: fit-content;
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
 }
 
 #chat-history::-webkit-scrollbar-track {
