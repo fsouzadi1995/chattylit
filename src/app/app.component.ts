@@ -61,7 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public sendMessage() {
-    const msg = this.chatFormGroup.get('message').value.trim();
+    const msg: string = this.chatFormGroup.get('message').value.trim();
 
     if (this.chatFormGroup.invalid) {
       return;
@@ -97,6 +97,7 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(
         tap((messages) => (this.recentMessages = messages)),
         tap(() => this.cd.detectChanges()),
+        tap(() => this.chatHistory.nativeElement.scrollTo(0, this.chatHistory.nativeElement.scrollHeight)),
       )
       .subscribe();
   }
