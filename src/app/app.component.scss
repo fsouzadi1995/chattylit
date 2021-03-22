@@ -9,6 +9,7 @@
 
   .text-container {
     width: fit-content;
+    max-width: 90%;
 
     p {
       font-size: 0.9rem;
@@ -31,9 +32,6 @@
 #chat-history::-webkit-scrollbar-thumb {
   background-color: #1e306d;
 }
-
-
-
 
 .arrow-container {
   position: absolute;

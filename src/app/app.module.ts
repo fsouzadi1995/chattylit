@@ -9,9 +9,11 @@ import { environment } from 'src/environments/environment';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NoEmptyWhitespaceDirective } from './directives/no-empty-whitespace.directive';
+import { LoginComponent } from './pages/login/login.component';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 @NgModule({
-  declarations: [AppComponent, NoEmptyWhitespaceDirective],
+  declarations: [AppComponent, NoEmptyWhitespaceDirective, LoginComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -20,6 +22,7 @@ import { NoEmptyWhitespaceDirective } from './directives/no-empty-whitespace.dir
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
+    NgxSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

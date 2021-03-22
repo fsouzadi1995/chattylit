@@ -9,9 +9,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Subject } from 'rxjs';
 import { takeUntil, tap } from 'rxjs/operators';
-import { FirebaseService } from './core/services/firebase.service';
+import { MessageService } from './core/services/message.service';
 import { Message } from './models/message.model';
 
 @Component({
@@ -25,7 +26,6 @@ import { Message } from './models/message.model';
         animate('300ms', style({ opacity: 1, transform: 'translateX(0)' })),
       ]),
     ]),
-    trigger('fadeIn', [transition(':enter', [style({ opacity: 0 }), animate('250ms'), style({ opacity: 1 })])]),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -42,17 +42,19 @@ export class AppComponent implements OnInit, OnDestroy {
   private readonly onDestroy$: Subject<void> = new Subject();
 
   constructor(
-    public readonly firebaseSvc: FirebaseService,
     private readonly fb: FormBuilder,
     private readonly cd: ChangeDetectorRef,
+    private readonly spinnerSvc: NgxSpinnerService,
+    public readonly messageSvc: MessageService,
   ) {
-    this.messages = [];
-    this.recentMessages = [];
+    this.spinnerSvc.show();
   }
 
   public ngOnInit(): void {
     this.fetchRecentMessages();
     this.setUpMessagesObs();
+
+    this.cd.detectChanges();
   }
 
   public ngOnDestroy(): void {
@@ -60,7 +62,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.onDestroy$.complete();
   }
 
-  public sendMessage() {
+  public sendMessage(): void {
     const msg: string = this.chatFormGroup.get('message').value.trim();
 
     if (this.chatFormGroup.invalid) {
@@ -69,7 +71,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
     console.warn({ msg });
 
-    this.firebaseSvc
+    this.messageSvc
       .postMessage(msg, 'bkw')
       .pipe(
         tap(() => this.cd.detectChanges()),
@@ -81,10 +83,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private setUpMessagesObs(): void {
-    this.firebaseSvc.messages$
+    this.messageSvc.messages$
       .pipe(
         takeUntil(this.onDestroy$),
-        tap((res) => (this.messages = [...this.messages, ...res])),
+        tap((res) => (this.messages = [...(this.messages || []), ...res])),
         tap(() => this.cd.detectChanges()),
         tap(() => this.chatHistory.nativeElement.scrollTo(0, this.chatHistory.nativeElement.scrollHeight)),
       )
@@ -92,7 +94,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private fetchRecentMessages(): void {
-    this.firebaseSvc
+    this.messageSvc
       .getRecentMessages()
       .pipe(
         tap((messages) => (this.recentMessages = messages)),
@@ -100,5 +102,13 @@ export class AppComponent implements OnInit, OnDestroy {
         tap(() => this.chatHistory.nativeElement.scrollTo(0, this.chatHistory.nativeElement.scrollHeight)),
       )
       .subscribe();
+  }
+
+  public get isLoading(): boolean {
+    return !!!this.messages && !!!this.recentMessages;
+  }
+
+  public get isEmpty(): boolean {
+    return !this.isLoading && !!!this.messages?.length && !!!this.recentMessages?.length;
   }
 }

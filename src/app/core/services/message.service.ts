@@ -8,7 +8,7 @@ import { DateUtils } from 'src/app/utils/date-utils';
 @Injectable({
   providedIn: 'root',
 })
-export class FirebaseService {
+export class MessageService {
   public messages$: Subject<Message[]> = new Subject();
   private readonly msgCollection: AngularFirestoreCollection;
 
@@ -19,9 +19,11 @@ export class FirebaseService {
     this.setUpMessageListener();
   }
 
-  public postMessage(text: string, username: string): Observable<DocumentReference> {
+  public postMessage(text: string, username: string): Observable<void> {
+    const messageRef = this.msgCollection.doc();
     return from(
-      this.msgCollection.add({
+      messageRef.set({
+        id: messageRef.ref.id,
         text,
         username,
         read: false,
