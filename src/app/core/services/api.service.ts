@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, QuerySnapshot } from '@angular/fire/firestore';
+import { AngularFirestore, CollectionReference, QuerySnapshot } from '@angular/fire/firestore';
 import { from, Observable } from 'rxjs';
 import { SearchOptions } from 'src/app/models/search-options.model';
 
@@ -27,8 +27,9 @@ export class ApiService {
     );
   }
 
-  public insertOne(collectionName: string, doc: any): Observable<any> {
-    return from(this.afs.collection(collectionName).add(doc));
+  public insertOne(collectionName: string, doc?: any): Observable<any> {
+    const { id } = this.afs.collection(collectionName).doc().ref;
+    return from(this.afs.collection(collectionName).doc(id).set(doc));
   }
 
   public updateOne(collectionName: string, doc: any): Observable<any> {
@@ -37,5 +38,9 @@ export class ApiService {
 
   public deleteOne(collectionName: string, doc: any): Observable<any> {
     return from(this.afs.collection(collectionName).doc(doc.id).delete());
+  }
+
+  public getCollectionRef(collectionName: string): CollectionReference {
+    return this.afs.collection(collectionName).ref;
   }
 }

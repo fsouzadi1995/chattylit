@@ -1,71 +1,76 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, DocumentReference } from '@angular/fire/firestore';
 import { from, Observable, of, Subject } from 'rxjs';
 import { Message } from 'src/app/models/message.model';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { switchMap, take } from 'rxjs/operators';
 import { DateUtils } from 'src/app/utils/date-utils';
+import { ApiService } from './api.service';
+import { SearchOptions } from 'src/app/models/search-options.model';
+import { DocumentData } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MessageService {
-  public messages$: Subject<Message[]> = new Subject();
-  private readonly msgCollection: AngularFirestoreCollection;
+  public readonly messages$: Subject<Message[]> = new Subject();
+  private readonly collectionName = 'messages';
 
-  constructor(private readonly afs: AngularFirestore) {
-    this.msgCollection = this.afs.collection('messages');
-
+  constructor(private readonly apiSvc: ApiService) {
     this.getRecentMessages();
     this.setUpMessageListener();
   }
 
   public postMessage(text: string, username: string): Observable<void> {
-    const messageRef = this.msgCollection.doc();
-    return from(
-      messageRef.set({
-        id: messageRef.ref.id,
-        text,
-        username,
-        read: false,
-        date: new Date(),
-      }),
-    ).pipe(take(1));
+    return this.apiSvc.insertOne(this.collectionName, {
+      text,
+      username,
+      read: false,
+      date: new Date(),
+    });
   }
 
   public getRecentMessages(): Observable<Message[]> {
-    return from(this.msgCollection.ref.where('date', '>', DateUtils.obtainFiveMinutesAgoDate()).get()).pipe(
-      take(1),
-      switchMap((res) =>
-        of(
-          res.docs
-            .map((doc) => {
-              const msg = doc.data();
+    const searchParams: SearchOptions = {
+      property: 'date',
+      operator: '>',
+      value: DateUtils.obtainFiveMinutesAgoDate(),
+    };
 
-              return {
-                ...msg,
-                date: new Date(msg.date.seconds * 1000),
-              } as Message;
-            })
-            .sort((a, b) => a.date.valueOf() - b.date.valueOf()),
+    return from(
+      this.apiSvc
+        .getCollectionRef(this.collectionName)
+        .where(searchParams.property, searchParams.operator, searchParams.value)
+        .orderBy('date', 'asc')
+        .get(),
+    ).pipe(
+      take(1),
+      switchMap(({ docs }) =>
+        of(
+          docs.map((doc: DocumentData) => ({
+            ...doc.data(),
+            date: new Date(doc.data().date.seconds * 1000),
+          })),
         ),
       ),
     );
   }
 
   private setUpMessageListener(): void {
-    this.msgCollection.ref
-      .where('date', '>', new Date())
+    const searchParams: SearchOptions = {
+      property: 'date',
+      operator: '>',
+      value: new Date(),
+    };
+
+    this.apiSvc
+      .getCollectionRef(this.collectionName)
+      .where(searchParams.property, searchParams.operator, searchParams.value)
       .orderBy('date', 'asc')
       .limitToLast(1)
       .onSnapshot((querySnapshot) => {
-        const docs = querySnapshot.docs.map((doc) => {
-          const msg = doc.data();
-
-          return {
-            ...msg,
-            date: new Date(msg.date.seconds * 1000),
-          } as Message;
-        });
+        const docs = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          date: new Date(doc.data().date.seconds * 1000),
+        })) as Message[];
 
         this.messages$.next(docs);
       });
