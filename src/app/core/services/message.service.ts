@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { from, Observable, of, Subject } from 'rxjs';
 import { Message } from 'src/app/models/message.model';
-import { switchMap, take } from 'rxjs/operators';
+import { map, switchMap, take } from 'rxjs/operators';
 import { DateUtils } from 'src/app/utils/date-utils';
 import { ApiService } from './api.service';
 import { SearchOptions } from 'src/app/models/search-options.model';
@@ -20,7 +20,7 @@ export class MessageService {
   }
 
   public postMessage(text: string, username: string): Observable<void> {
-    return this.apiSvc.insertOne(this.collectionName, {
+    return this.apiSvc.insertOne<Message>(this.collectionName, {
       text,
       username,
       read: false,
@@ -42,15 +42,13 @@ export class MessageService {
         .orderBy('date', 'asc')
         .get(),
     ).pipe(
-      take(1),
-      switchMap(({ docs }) =>
-        of(
-          docs.map((doc: DocumentData) => ({
-            ...doc.data(),
-            date: new Date(doc.data().date.seconds * 1000),
-          })),
-        ),
+      map(({ docs }) =>
+        docs.map((doc: DocumentData) => ({
+          ...doc.data(),
+          date: new Date(doc.data().date.seconds * 1000),
+        })),
       ),
+      take(1),
     );
   }
 

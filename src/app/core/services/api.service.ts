@@ -9,35 +9,35 @@ import { SearchOptions } from 'src/app/models/search-options.model';
 export class ApiService {
   constructor(private readonly afs: AngularFirestore) {}
 
-  public findOne(collectionName: string, searchParams: SearchOptions): Observable<QuerySnapshot<any>> {
+  public findOne<T>(collectionName: string, searchParams: SearchOptions): Observable<QuerySnapshot<T>> {
     return from(
       this.afs
-        .collection(collectionName)
+        .collection<T>(collectionName)
         .ref.where(searchParams.property, searchParams.operator, searchParams.value)
         .get(),
     );
   }
 
-  public findMany(collectionName: string, searchParams: SearchOptions): Observable<QuerySnapshot<any>> {
+  public findMany<T>(collectionName: string, searchParams: SearchOptions): Observable<QuerySnapshot<T>> {
     return from(
       this.afs
-        .collection(collectionName)
+        .collection<T>(collectionName)
         .ref.where(searchParams.property, searchParams.operator, searchParams.value)
         .get(),
     );
   }
 
-  public insertOne(collectionName: string, doc?: any): Observable<any> {
+  public insertOne<T>(collectionName: string, doc?: any): Observable<void> {
     const { id } = this.afs.collection(collectionName).doc().ref;
-    return from(this.afs.collection(collectionName).doc(id).set(doc));
+    return from(this.afs.collection<T>(collectionName).doc(id).set(doc));
   }
 
-  public updateOne(collectionName: string, doc: any): Observable<any> {
-    return from(this.afs.collection(collectionName).doc(doc.id).set(doc));
+  public updateOne<T>(collectionName: string, doc: any): Observable<void> {
+    return from(this.afs.collection<T>(collectionName).doc(doc.id).set(doc));
   }
 
-  public deleteOne(collectionName: string, doc: any): Observable<any> {
-    return from(this.afs.collection(collectionName).doc(doc.id).delete());
+  public deleteOne<T>(collectionName: string, doc: any): Observable<void> {
+    return from(this.afs.collection<T>(collectionName).doc(doc.id).delete());
   }
 
   public getCollectionRef(collectionName: string): CollectionReference {
