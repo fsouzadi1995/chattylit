@@ -85,10 +85,10 @@ export class AppComponent implements OnInit, OnDestroy {
   private setUpMessagesObs(): void {
     this.messageSvc.messages$
       .pipe(
-        takeUntil(this.onDestroy$),
         tap((res) => (this.messages = [...(this.messages || []), ...res])),
         tap(() => this.cd.detectChanges()),
         tap(() => this.chatHistory.nativeElement.scrollTo(0, this.chatHistory.nativeElement.scrollHeight)),
+        takeUntil(this.onDestroy$),
       )
       .subscribe();
   }
