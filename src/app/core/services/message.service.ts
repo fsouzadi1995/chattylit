@@ -39,6 +39,7 @@ export class MessageService {
         .getCollectionRef(this.collectionName)
         .where(searchParams.property, searchParams.operator, searchParams.value)
         .orderBy('date', 'asc')
+        // @TODO: LIMIT 10
         .get(),
     ).pipe(
       map(({ docs }) =>
