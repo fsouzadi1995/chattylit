@@ -35,15 +35,22 @@
 
 .arrow-container {
   position: absolute;
-  top: 0;
-  left: 0;
   margin-top: -7.5px;
+  top: 0;
+}
 
-  .arrow-up {
-    width: 0;
-    height: 0;
-    border-left: 7.5px solid transparent;
-    border-right: 7.5px solid transparent;
-    border-bottom: 7.5px solid #1f2937;
-  }
+.self {
+  right: 0;
+}
+
+.incoming {
+  left: 0;
+}
+
+.arrow-up {
+  width: 0;
+  height: 0;
+  border-left: 7.5px solid transparent;
+  border-right: 7.5px solid transparent;
+  border-bottom: 7.5px solid #1f2937;
 }

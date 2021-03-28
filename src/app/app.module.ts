@@ -11,7 +11,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NoEmptyWhitespaceDirective } from './directives/no-empty-whitespace.directive';
 import { LoginComponent } from './pages/login/login.component';
 import { NgxSpinnerModule } from 'ngx-spinner';
-
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 @NgModule({
   declarations: [AppComponent, NoEmptyWhitespaceDirective, LoginComponent],
   imports: [
@@ -23,8 +25,10 @@ import { NgxSpinnerModule } from 'ngx-spinner';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
     NgxSpinnerModule,
+    MatIconModule,
+    MatButtonModule,
+    MatDialogModule,
   ],
-  providers: [],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

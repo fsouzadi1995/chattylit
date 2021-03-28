@@ -1,11 +1,22 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
-/* You can add global styles to this file, and also import other style files */
 
 html {
   font-family: 'Montserrat', sans-serif;
+}
+
+.dialog .mat-dialog-container {
+  @apply bg-gray-800;
+  padding: 0;
+  margin: 0;
+
+  .mat-dialog-content {
+    padding: 0;
+    margin: 0;
+    display: flex;
+  }
 }

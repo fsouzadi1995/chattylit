@@ -11,26 +11,37 @@ import {
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subject } from 'rxjs';
-import { takeUntil, tap } from 'rxjs/operators';
+import { finalize, take, takeUntil, tap } from 'rxjs/operators';
 import { MessageService } from './core/services/message.service';
 import { Message } from './models/message.model';
+import { MatDialog } from '@angular/material/dialog';
+import { LoginComponent } from './pages/login/login.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   animations: [
-    trigger('fadeSlideIn', [
+    trigger('fadeSlideInLTR', [
       transition(':enter', [
-        style({ opacity: 0, transform: 'translateX(10px)' }),
+        style({ opacity: 0, transform: 'translateX(30px)' }),
         animate('300ms', style({ opacity: 1, transform: 'translateX(0)' })),
       ]),
     ]),
+    trigger('fadeSlideInRTL', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(-30px)' }),
+        animate('300ms', style({ opacity: 1, transform: 'translateX(0)' })),
+      ]),
+    ]),
+    trigger('fadeIn', [transition(':enter', [style({ opacity: 0 }), animate('300ms', style({ opacity: 1 }))])]),
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('chatHistory') private chatHistory: ElementRef;
+
+  public userName: string;
 
   public messages: Message[];
   public recentMessages: Message[];
@@ -46,6 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly cd: ChangeDetectorRef,
     private readonly spinnerSvc: NgxSpinnerService,
     public readonly messageSvc: MessageService,
+    private readonly dialog: MatDialog,
   ) {
     this.spinnerSvc.show();
   }
@@ -62,6 +74,32 @@ export class AppComponent implements OnInit, OnDestroy {
     this.onDestroy$.complete();
   }
 
+  public get isLoading(): boolean {
+    return !!!this.messages && !!!this.recentMessages;
+  }
+
+  public get isEmpty(): boolean {
+    return !this.isLoading && !!!this.messages?.length && !!!this.recentMessages?.length;
+  }
+
+  public openDropdown(): void {
+    this.dialog
+      .open(LoginComponent, {
+        autoFocus: false,
+        panelClass: 'dialog',
+        height: '30%',
+        width: '50%',
+      })
+      .afterClosed()
+      .pipe(
+        tap((name) => console.log({ name })),
+        tap((name) => (this.userName = name)),
+        finalize(() => this.cd.detectChanges()),
+        take(1),
+      )
+      .subscribe();
+  }
+
   public sendMessage(): void {
     const msg: string = this.chatFormGroup.get('message').value.trim();
 
@@ -72,7 +110,7 @@ export class AppComponent implements OnInit, OnDestroy {
     console.warn({ msg });
 
     this.messageSvc
-      .postMessage(msg, 'bkw')
+      .postMessage(msg, this.userName)
       .pipe(
         tap(() => this.cd.detectChanges()),
         tap(() => this.chatHistory.nativeElement.scrollTo(0, this.chatHistory.nativeElement.scrollHeight)),
@@ -81,6 +119,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.chatFormGroup.reset();
   }
+
+  public login(): void {}
 
   private setUpMessagesObs(): void {
     this.messageSvc.messages$
@@ -102,13 +142,5 @@ export class AppComponent implements OnInit, OnDestroy {
         tap(() => this.chatHistory.nativeElement.scrollTo(0, this.chatHistory.nativeElement.scrollHeight)),
       )
       .subscribe();
-  }
-
-  public get isLoading(): boolean {
-    return !!!this.messages && !!!this.recentMessages;
-  }
-
-  public get isEmpty(): boolean {
-    return !this.isLoading && !!!this.messages?.length && !!!this.recentMessages?.length;
   }
 }
