@@ -16,8 +16,12 @@
     </div>
     <div>
       <button
-        class="px-5 py-2 rounded-full bg-blue-900 transition-colors hover:bg-blue-700 focus:outline-none"
+        class="px-5 py-2 rounded-full transition-colors focus:outline-none"
         [mat-dialog-close]="userName.value"
+        [disabled]="!userName.value.length"
+        [class.bg-gray-500]="!userName.value.length"
+        [class.bg-blue-900]="userName.value.length"
+        [class.hover:bg-blue-700]="userName.value.length"
       >
         Accept
       </button>
