@@ -1,0 +1,12 @@
+<div class="text-right">
+  <small class="text-gray-400">{{ message.date | date: 'shortTime' }}</small> |
+  <small class="username text-green-500 rounded-full">{{ message.username }}</small>
+</div>
+<div class="w-full flex justify-end items-center">
+  <div class="text-container mt-3 p-2 max-w-2xl break-words bg-gray-800 rounded-lg rounded-tr-none relative">
+    <div class="arrow-container outgoing">
+      <div class="arrow-up"></div>
+    </div>
+    <p class="text-sm">{{ message.text }}</p>
+  </div>
+</div>

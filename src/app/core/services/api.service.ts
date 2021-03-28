@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, CollectionReference, QuerySnapshot } from '@angular/fire/firestore';
 import { from, Observable } from 'rxjs';
-import { SearchOptions } from 'src/app/models/search-options.model';
+import { SearchOptions } from '@models/index';
 
 @Injectable({
   providedIn: 'root',

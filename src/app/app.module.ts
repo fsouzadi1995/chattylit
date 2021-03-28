@@ -5,29 +5,20 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { environment } from 'src/environments/environment';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { environment } from '@environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NoEmptyWhitespaceDirective } from './directives/no-empty-whitespace.directive';
-import { LoginComponent } from './pages/login/login.component';
-import { NgxSpinnerModule } from 'ngx-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { NoEmptyWhitespaceDirective } from '@directives/no-empty-whitespace.directive';
+import { ChatModule } from '@pages/chat/chat.module';
+
 @NgModule({
-  declarations: [AppComponent, NoEmptyWhitespaceDirective, LoginComponent],
+  declarations: [AppComponent, NoEmptyWhitespaceDirective],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
-    ReactiveFormsModule,
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    NgxSpinnerModule,
-    MatIconModule,
-    MatButtonModule,
-    MatDialogModule,
+    ChatModule,
   ],
   bootstrap: [AppComponent],
 })

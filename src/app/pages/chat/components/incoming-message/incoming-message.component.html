@@ -1,0 +1,10 @@
+<div>
+  <small class="username text-yellow-500 rounded-full">{{ message.username }}</small> |
+  <small class="text-gray-400">{{ message.date | date: 'shortTime' }}</small>
+</div>
+<div class="text-container mt-3 p-2 max-w-2xl break-words bg-gray-800 rounded-lg rounded-tl-none relative">
+  <div class="arrow-container incoming">
+    <div class="arrow-up"></div>
+  </div>
+  <p class="text-sm">{{ message.text }}</p>
+</div>

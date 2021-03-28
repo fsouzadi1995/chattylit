@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
-import { from, Observable, of, Subject } from 'rxjs';
-import { Message } from 'src/app/models/message.model';
-import { map, switchMap, take } from 'rxjs/operators';
-import { DateUtils } from 'src/app/utils/date-utils';
+import { from, Observable, Subject } from 'rxjs';
+import { Message, SearchOptions } from '@models/index';
+import { map, take } from 'rxjs/operators';
+import { DateUtils } from '@utils/date-utils';
 import { ApiService } from './api.service';
-import { SearchOptions } from 'src/app/models/search-options.model';
 import { DocumentData } from '@angular/fire/firestore';
 
 @Injectable({
