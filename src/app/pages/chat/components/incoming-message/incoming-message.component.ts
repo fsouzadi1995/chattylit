@@ -1,4 +1,4 @@
-import { Message } from '@models/index';
+import { Message } from '@models';
 import { Component, Input } from '@angular/core';
 
 @Component({
@@ -7,5 +7,5 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./incoming-message.component.scss'],
 })
 export class IncomingMessageComponent {
-  @Input() public message: Message;
+  @Input() public readonly message: Message;
 }

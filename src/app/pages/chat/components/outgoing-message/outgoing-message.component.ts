@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Message } from '@models/message.model';
+import { Message } from '@models';
 
 @Component({
   selector: 'app-outgoing-message',
@@ -7,5 +7,5 @@ import { Message } from '@models/message.model';
   styleUrls: ['./outgoing-message.component.scss'],
 })
 export class OutgoingMessageComponent {
-  @Input() public message: Message;
+  @Input() public readonly message: Message;
 }

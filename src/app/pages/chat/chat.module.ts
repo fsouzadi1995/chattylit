@@ -5,10 +5,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
-import { ChatComponent, IncomingMessageComponent, OutgoingMessageComponent, LoginComponent } from './index';
+import {
+  ChatComponent,
+  IncomingMessageComponent,
+  OutgoingMessageComponent,
+  LoginComponent,
+  HeaderComponent,
+} from '@pages/chat';
 
 @NgModule({
-  declarations: [ChatComponent, IncomingMessageComponent, OutgoingMessageComponent, LoginComponent],
+  declarations: [ChatComponent, IncomingMessageComponent, OutgoingMessageComponent, LoginComponent, HeaderComponent],
   imports: [
     CommonModule,
     FormsModule,

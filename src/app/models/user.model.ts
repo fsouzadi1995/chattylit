@@ -1,8 +1,5 @@
-import { Colors } from './colors.enum';
-import { Emoji } from './emoji.enum';
-
 export interface User {
+  id?: string;
   name: string;
-  color: Colors;
-  emoji: Emoji;
+  createDate: Date;
 }

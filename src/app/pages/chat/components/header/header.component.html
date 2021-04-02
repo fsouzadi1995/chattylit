@@ -1,0 +1,18 @@
+<div>
+  <h4>Chattylit 🔥</h4>
+</div>
+<div>
+  <ng-container *ngIf="concurrentUsers">
+    <ng-container *ngIf="concurrentUsers.length">
+      👥
+      <ng-container *ngIf="concurrentUsers.length > 3; else showNames">
+        <small>{{ concurrentUsers.length }} users online</small>
+      </ng-container>
+      <ng-template #showNames>
+        <ng-container *ngFor="let user of concurrentUsers; let last = last">
+          <small class="text-yellow-500"> {{ last ? user.name : user.name + ', ' }}</small>
+        </ng-container>
+      </ng-template>
+    </ng-container>
+  </ng-container>
+</div>

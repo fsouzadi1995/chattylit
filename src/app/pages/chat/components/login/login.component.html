@@ -1,12 +1,15 @@
 <div class="h-full p-5 flex flex-col items-center justify-around text-gray-300">
-  <div class="text-center"><h2>Choose a nickname 💬</h2></div>
-  <div class="w-1/2">
+  <div class="text-center" mat-dialog-title><h2>Choose a nickname 💬</h2></div>
+  <div class="w-1/2" mat-dialog-content>
     <input
-      #userName
       class="w-full px-5 py-2.5 border rounded bg-gray-700 transition-colors hover:bg-gray-600 focus:outline-none focus:border-2 focus:border-blue-400"
       type="text"
       placeholder="Name"
+      [formControl]="nameCtrl"
+      (keydown.enter)="onSubmit()"
     />
+    <small class="text-red-500" *ngIf="nameCtrl.dirty && nameCtrl.hasError('required')">Name cannot be empty</small>
+    <small class="text-red-500" *ngIf="nameCtrl.hasError('pattern')">Name cannot contain spaces</small>
   </div>
   <div class="w-full flex justify-evenly items-center flex-col gap-2 md:flex-row md:gap-0">
     <div>
@@ -17,11 +20,11 @@
     <div>
       <button
         class="px-5 py-2 rounded-full transition-colors focus:outline-none"
-        [mat-dialog-close]="userName.value"
-        [disabled]="!userName.value.length"
-        [class.bg-gray-500]="!userName.value.length"
-        [class.bg-blue-900]="userName.value.length"
-        [class.hover:bg-blue-700]="userName.value.length"
+        [disabled]="nameCtrl.invalid"
+        [class.bg-gray-500]="nameCtrl.invalid"
+        [class.bg-blue-900]="nameCtrl.valid"
+        [class.hover:bg-blue-700]="nameCtrl.touched && nameCtrl.valid"
+        (click)="onSubmit()"
       >
         Accept
       </button>
